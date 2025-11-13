@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CompetitorAnalysisOutput } from '../types';
 import { analyzeCompetitors } from '../services/lucresiaService';
@@ -108,7 +107,7 @@ const AnalisadorSensorialView: React.FC = () => {
                                             </ul>
                                         </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
                             <div className="bg-brand-gold/10 p-4 rounded-lg border-l-4 border-brand-gold">
                                 <h3 className="font-serif-display text-lg flex items-center gap-2 mb-2 text-brand-dark-purple">

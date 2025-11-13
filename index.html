@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elevare | Estética Lucrativa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+      @layer base {
+        html {
+          font-family: 'Lato', sans-serif;
+        }
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-white': '#FFFFFF',
+              'brand-soft-black': '#2E2F33',
+              'brand-lavender': '#C7B8EA',
+              'brand-lavender-deep': '#A892E6',
+              'brand-lilac': '#D8CCF0',
+              'brand-dark-purple': '#58457D',
+              'brand-gold': '#C9A86A',
+              'brand-nude': '#E8D4CE',
+              'brand-sand': '#F5F1EE',
+              'brand-rose-gold': '#D4B2A6',
+              'brand-pearl': '#CFCFD3',
+              'brand-graphite': '#484A52',
+            },
+            fontFamily: {
+              sans: ['Lato', 'sans-serif'],
+              'serif-display': ['Playfair Display', 'serif'],
+            },
+            boxShadow: {
+                'subtle': '0 10px 25px rgba(20,20,30,.07)',
+            },
+             backgroundImage: {
+                'gold-gradient': 'linear-gradient(180deg, #EED9B7, #C9A86A)',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="bg-brand-sand text-brand-graphite">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+
+    <!-- INÍCIO: LucresIA Welcome Module (Elevare) -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+    /* LucresIA Welcome Module - estilos Elevare */
+    .lucresia-root{position:fixed;right:20px;bottom:22px;z-index:99999;max-width:420px;font-family:"Lora",serif}
+    .luc-card{background:linear-gradient(180deg,#fff,#FBF8FF);border-radius:14px;padding:16px;box-shadow:0 24px 60px rgba(34,51,68,0.14);border:1px solid rgba(183,132,247,0.07);display:flex;gap:12px;align-items:flex-start}
+    .luc-avatar{width:64px;height:64px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,#B784F7,#E5DAFA);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:20px}
+    .luc-content{flex:1;min-width:0}
+    .luc-title{font-family:'Montserrat',sans-serif;font-size:16px;margin:0;color:#223344;font-weight:700}
+    .luc-sub{margin:6px 0 10px;color:#6F7A89;font-size:13px}
+    .luc-text{color:#2f3540;font-size:14px;line-height:1.45}
+    .luc-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .luc-btn{background:#B784F7;color:#fff;padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .luc-btn.ghost{background:transparent;border:1px solid rgba(34,51,68,0.06);color:#223344}
+    .luc-min{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 18px 40px rgba(34,51,68,0.06);border:1px solid rgba(34,51,68,0.03);cursor:pointer;font-weight:700;color:#6F7A89;display:flex;gap:8px;align-items:center}
+    .luc-min .dot{width:8px;height:8px;border-radius:50%;background:#E5DAFA}
+    @media(max-width:520px){
+      .luc-card{padding:12px}
+      .luc-avatar{width:52px;height:52px;font-size:18px}
+      .luc-root{left:12px;right:12px}
+    }
+    </style>
+
+    <!-- container -->
+    <div id="lucresia-root" class="lucresia-root" aria-live="polite" aria-atomic="true" style="display:none">
+      <!-- full card (welcome) will be rendered here -->
+    </div>
+
+    <script>
+    /*
+      LucresIA Welcome Module (Elevare)
+      API:
+        Lucresia.showWelcome(sectorId, sectorName, options)
+        Lucresia.resetSector(sectorId)
+        Lucresia.forceShow(sectorId, sectorName) // for testing
+      Behavior:
+        - Shows full welcome ONCE per sector (stored in localStorage)
+        - On subsequent visits shows smaller persistent "badge" that can be expanded
+    */
+
+    window.Lucresia = (function(){
+      const STORAGE_PREFIX = 'elevare_lucresia_shown_';
+      const root = document.getElementById('lucresia-root');
+
+      function hasSeen(sectorId){
+        try{
+          return localStorage.getItem(STORAGE_PREFIX + sectorId) === '1';
+        }catch(e){ return false; }
+      }
+      function markSeen(sectorId){
+        try{ localStorage.setItem(STORAGE_PREFIX + sectorId, '1'); }catch(e){}
+      }
+      function resetSector(sectorId){
+        try{ localStorage.removeItem(STORAGE_PREFIX + sectorId); }catch(e){}
+      }
+
+      function createFullCard(sectorId, sectorName, opts={}){
+        // main welcome message with 20 years
+        const wrapper = document.createElement('div');
+        wrapper.className = 'luc-card';
+        wrapper.setAttribute('role','dialog');
+        wrapper.setAttribute('aria-label','Mensagem de boas-vindas da LucresIA');
+        wrapper.innerHTML = `
+          <div class="luc-avatar" aria-hidden="true">Lz</div>
+          <div class="luc-content">
+            <div class="luc-title">LucresIA — sua Mentora Digital</div>
+            <div class="luc-sub">${escapeHtml(sectorName)} • Primeira vez aqui</div>
+            <div class="luc-text">
+              Olá! Eu sou a <strong>LucresIA</strong>, sua assistente estratégica.
+              Fui criada pela Carine Marques — com <strong>mais de 20 anos de experiência</strong> no mercado da estética — para unir
+              <em>IA, mentoria e automação</em> e transformar dados e rotina em <strong>resultados reais</strong>.
+              <br><br>
+              Nesta área (<strong>${escapeHtml(sectorName)}</strong>) vou te guiar passo a passo, explicar as funções e sugerir ações práticas.
+            </div>
+            <div class="luc-actions">
+              <button class="luc-btn ghost" aria-label="Fechar e ver depois" onclick="Lucresia._closeFull('${sectorId}', '${escapeHtml(sectorName)}')">Fechar</button>
+              <button class="luc-btn" aria-label="Abrir ajuda detalhada" onclick="Lucresia._openHelp('${sectorId}')">Quero ver agora</button>
+            </div>
+          </div>
+        `;
+        return wrapper;
+      }
+
+      function createMiniBadge(sectorId, sectorName){
+        const btn = document.createElement('button');
+        btn.className = 'luc-min';
+        btn.setAttribute('aria-label','Abrir LucresIA');
+        btn.innerHTML = `<span class="dot" aria-hidden="true"></span><span>LucresIA • ${escapeHtml(truncate(sectorName,18))}</span>`;
+        btn.onclick = function(){
+          // if seen, open short contextual card
+          openShort(sectorId, sectorName);
+        };
+        return btn;
+      }
+
+      function openShort(sectorId, sectorName){
+        // short contextual text — non-intrusive
+        root.innerHTML = '';
+        const card = document.createElement('div');
+        card.className = 'luc-card';
+        card.style.maxWidth = '360px';
+        card.innerHTML = `
+          <div class="luc-avatar" aria-hidden="true">Lz</div>
+          <div class="luc-content">
+            <div class="luc-title">LucresIA</div>
+            <div class="luc-sub">${escapeHtml(sectorName)}</div>
+            <div class="luc-text">Pronta para ajudar com tarefas desta área. Ou clique em "Ajuda rápida" para ver sugestões práticas.</div>
+            <div class="luc-actions">
+              <button class="luc-btn ghost" onclick="Lucresia._closeFull('${sectorId}', '${escapeHtml(sectorName)}')">Fechar</button>
+              <button class="luc-btn" onclick="Lucresia._openHelp('${sectorId}')">Ajuda rápida</button>
+            </div>
+          </div>
+        `;
+        root.appendChild(card);
+        root.style.display = 'block';
+      }
+
+      function showWelcome(sectorId, sectorName, options={}){
+        // if user already saw this sector, show mini badge instead
+        if(hasSeen(sectorId) && !options.forceFull){
+          // show mini badge only
+          root.innerHTML = '';
+          const mini = createMiniBadge(sectorId, sectorName);
+          root.appendChild(mini);
+          root.style.display = 'block';
+          return;
+        }
+        // show full card once
+        root.innerHTML = '';
+        const full = createFullCard(sectorId, sectorName, options);
+        root.appendChild(full);
+        root.style.display = 'block';
+        // mark seen if not forced off
+        if(!options.doNotMark) markSeen(sectorId);
+      }
+
+      // internal helpers used by buttons
+      function _closeFull(sectorId, sectorName){
+        // close and show mini badge (so user can reopen)
+        root.innerHTML = '';
+        const mini = createMiniBadge(sectorId, sectorName);
+        root.appendChild(mini);
+      }
+
+      function _closeMini(){
+        root.innerHTML = '';
+        root.style.display = 'none';
+      }
+
+      function _openHelp(sectorId){
+        const tips = tipsForSector(sectorId);
+        const sectorName = tips.title;
+        root.innerHTML = '';
+        const card = document.createElement('div');
+        card.className = 'luc-card';
+        card.innerHTML = `
+          <div class="luc-avatar">Lz</div>
+          <div class="luc-content">
+            <div class="luc-title">Ações recomendadas</div>
+            <div class="luc-sub">${escapeHtml(sectorName)}</div>
+            <div class="luc-text">${tips.list.map(t=>`<div style="margin-bottom:8px">• ${escapeHtml(t)}</div>`).join('')}</div>
+            <div class="luc-actions">
+              <button class="luc-btn ghost" onclick="Lucresia._closeFull('${sectorId}','${escapeHtml(sectorName)}')">Fechar</button>
+            </div>
+          </div>
+        `;
+        root.appendChild(card);
+      }
+
+      // simple mapping of tips per sectorId (customize as needed)
+      function tipsForSector(sector){
+        const map = {
+          'essencia-da-marca': {
+            title: 'Essência da Marca',
+            list: [
+              'Defina a personalidade (ex.: Confiante, Acolhedora, Técnica).',
+              'Descreva o público alvo com 3 características principais.',
+              'Adicione o seu serviço-chave e 3 diferenciais únicos.'
+            ],
+          },
+          'gerador-de-pautas': {
+            title: 'Gerador de Pautas',
+            list: [
+              'Forneça um tema detalhado para melhores resultados.',
+              'Experimente os diferentes tons de voz para variar seu conteúdo.',
+              'Use a "Mentoria Rápida" para aprender a estratégia por trás de cada legenda.'
+            ],
+          },
+          'calendario-editorial': {
+            title: 'Calendário Editorial',
+            list: [
+              'Use as sugestões automáticas para preencher dias vazios.',
+              'Clique em um post para editar ou ver detalhes.',
+              'Use o Co-piloto Sutil para refinar suas legendas em tempo real.'
+            ]
+          },
+           'jornada-da-cliente': {
+            title: 'Jornada da Cliente',
+            list: [
+              'Clique em cada etapa para receber uma mentoria da LucresIA.',
+              'Use o gerador de conteúdo para criar a comunicação certa para cada momento.',
+              'Mapeie a jornada da sua cliente ideal para identificar pontos de melhoria.'
+            ]
+          },
+          'analisador-sensorial': {
+            title: 'Analisador Sensorial',
+            list: [
+              'Insira o @ de até 3 concorrentes ou perfis de inspiração.',
+              'Analise o tom de voz e a estratégia visual do mercado.',
+              'Descubra a "Oportunidade Única" para diferenciar sua marca.'
+            ]
+          },
+          'default': {
+            title: 'Dicas Gerais',
+            list: [
+              'Explore as "Trilhas" para ter estratégias prontas.',
+              'Use o "Analisador de Resultados" para transformar métricas em ações.',
+              'Mantenha sua "Essência da Marca" sempre atualizada.'
+            ]
+          }
+        };
+        return map[sector] || map['default'];
+      }
+
+      // utility helpers
+      function escapeHtml(s){
+        if(!s) return '';
+        return s.replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#x27;'}[m];});
+      }
+      function truncate(s,n){ return s && s.length>n ? s.slice(0,n-1)+'…' : s; }
+
+      // Public API
+      return {
+        showWelcome: showWelcome,
+        resetSector: resetSector,
+        forceShow: function(sectorId, sectorName){ showWelcome(sectorId, sectorName, {forceFull:true, doNotMark:true}); },
+        _closeFull: _closeFull,
+        _closeMini: _closeMini,
+        _openHelp: _openHelp
+      };
+    })();
+    </script>
+    <!-- FIM: LucresIA Welcome Module -->
+  </body>
+</html>

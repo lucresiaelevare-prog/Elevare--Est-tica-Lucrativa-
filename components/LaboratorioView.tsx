@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ActiveView } from '../types';
 
@@ -70,7 +69,7 @@ const LaboratorioView: React.FC<LaboratorioViewProps> = ({ onNavigate }) => {
                     <h2 className="text-xl md:text-2xl font-serif-display font-semibold text-brand-dark-purple mb-3">Toda vez que criar algo fora, traga pra cá.</h2>
                     <p className="text-brand-graphite mb-6 max-w-lg mx-auto">A LucresIA analisa e aprimora seu conteúdo, garantindo que ele esteja alinhado com a sua Essência e com os princípios que convertem.</p>
                     <button 
-                        onClick={() => onNavigate('Avaliador de Conteúdo')}
+                        onClick={() => onNavigate('HUB de Análise')}
                         className="px-6 py-3 bg-brand-gold text-white rounded-lg font-semibold hover:bg-brand-gold/90 transition-all duration-150 active:scale-95 shadow-md shadow-brand-gold/30">
                         Aprimorar meu conteúdo
                     </button>

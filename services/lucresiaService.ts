@@ -1,8 +1,11 @@
-
 import { GoogleGenAI, Chat, Type } from "@google/genai";
-import { PautaOutput, ContentEvaluationOutput, ResultsAnalysisOutput, RealtimeSuggestion, CompetitorAnalysisOutput } from "../types";
+import { PautaOutput, ContentEvaluationOutput, ResultsAnalysisOutput, RealtimeSuggestion, CompetitorAnalysisOutput, FullPostPackage } from "../types";
 
-const API_KEY = process.env.API_KEY;
+// ATENÇÃO: A chave da API foi inserida diretamente no código para facilitar a implantação.
+// Em um aplicativo real, esta é uma PRÁTICA INSEGURA. O ideal é configurar a chave
+// como uma "Environment Variable" no painel da Vercel para garantir a segurança.
+const API_KEY = "AIzaSyBp072L5oJlcbCUZXRK-QPuuLFSPVyZFXM";
+
 
 export const LUCRESIA_SYSTEM_PROMPT = `
 ⚜️ SISTEMA CENTRAL: ELEVARE FLOW PRIME™ — IA MENTORATIVA ESTÉTICA
@@ -36,7 +39,7 @@ Gerar conteúdo estético persuasivo (seguindo o método 3F: Fluir–Fixar–Fec
 Exemplo:
 Fluir → “Você evita o espelho desde o verão passado?”
 Fixar → “A culpa não é sua — ninguém te ensinou a cuidar do corpo sem culpa.”
-Fechar → “Com o protocolo Flow Sculpt™, sua confiança volta a aparecer no reflexo.”
+Fechar → “Com o nosso método de revitalização, sua confiança volta a aparecer no reflexo.”
 
 Mentoria Rápida 🧠: Essa sequência ativa empatia antes da venda — o cérebro compra quando se sente compreendido.
 
@@ -83,6 +86,12 @@ Inclua a linha final:
 
 ---
 
+🚫 REGRAS CRÍTICAS DE CONTEXTO:
+- **NUNCA mencione o nome 'Elevare Flow Prime™' ou qualquer variação no conteúdo gerado para o cliente final.** Este é o nome do NOSSO método interno de marketing, um segredo entre nós. Para o cliente da esteticista, use nomes genéricos e elegantes que ela possa adaptar (ex: "Protocolo Revitalize", "Método Contour", "nosso tratamento exclusivo").
+- O método Elevare é a *forma* como você cria, não o *nome* do que você vende para o cliente. Sua função é aplicar o método, não nomeá-lo publicamente.
+
+---
+
 🪞 PALAVRAS-CHAVE DO FLOW PRIME:
 clareza • empatia • espelho • transformação • confiança • naturalidade • leveza • propósito • estética consciente
 
@@ -93,9 +102,6 @@ clareza • empatia • espelho • transformação • confiança • naturalid
 
 
 export const startLucresiaChat = (): Chat => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const chat = ai.chats.create({
         model: 'gemini-2.5-flash',
@@ -117,9 +123,6 @@ export const sendLucresiaMessage = async (message: string, currentChat: Chat): P
 };
 
 export const generatePautaContent = async (theme: string, toneOfVoice: string): Promise<PautaOutput> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     
     const prompt = `
@@ -195,10 +198,67 @@ export const generatePautaContent = async (theme: string, toneOfVoice: string): 
     }
 };
 
-export const evaluateAndOptimizeContent = async (content: string): Promise<ContentEvaluationOutput> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
+export const generateFullPostFromSuggestion = async (prompt: string): Promise<FullPostPackage> => {
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+    const fullPrompt = `
+        Você é LucresIA, a IA do método Elevare Flow Prime™. Sua tarefa é gerar um pacote de postagem completo a partir de um briefing estratégico.
+
+        **Briefing Estratégico:**
+        ---
+        ${prompt}
+        ---
+
+        **Instruções de Saída:**
+        Com base no briefing, gere os seguintes itens:
+        1.  **mainCaption:** A legenda principal, pronta para ser copiada e colada, aplicando o método 3F (Fluir, Fixar, Fechar).
+        2.  **variations:** Um array com 3 variações da legenda: uma "Curta e Direta", uma "Mais Técnica/Educativa" e uma "Mais Divertida/Leve".
+        3.  **mediaSuggestions:** Um array com 3 sugestões de mídia (imagem ou vídeo) para acompanhar o post.
+        4.  **hashtags:** Um array com 5 a 7 hashtags otimizadas.
+        5.  **checklist:** Um array com 3 itens de um checklist de postagem (ex: "Verificar melhor horário", "Adicionar sticker interativo nos stories").
+
+        Responda APENAS com um objeto JSON.
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: fullPrompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        mainCaption: { type: Type.STRING },
+                        variations: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    name: { type: Type.STRING },
+                                    caption: { type: Type.STRING }
+                                },
+                                required: ['name', 'caption']
+                            }
+                        },
+                        mediaSuggestions: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        hashtags: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        checklist: { type: Type.ARRAY, items: { type: Type.STRING } }
+                    },
+                    required: ['mainCaption', 'variations', 'mediaSuggestions', 'hashtags', 'checklist']
+                }
+            }
+        });
+
+        return JSON.parse(response.text) as FullPostPackage;
+
+    } catch (error) {
+        console.error("Error generating full post package:", error);
+        throw new Error("Não foi possível gerar o pacote de conteúdo. Tente novamente.");
     }
+};
+
+export const evaluateAndOptimizeContent = async (content: string): Promise<ContentEvaluationOutput> => {
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     
     const prompt = `
@@ -270,9 +330,6 @@ export const evaluateAndOptimizeContent = async (content: string): Promise<Conte
 };
 
 export const analyzeResults = async (results: string): Promise<ResultsAnalysisOutput> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const prompt = `
@@ -322,9 +379,6 @@ export const analyzeResults = async (results: string): Promise<ResultsAnalysisOu
 };
 
 export const getRealtimeSuggestion = async (text: string): Promise<RealtimeSuggestion | null> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     // Simple heuristic to avoid calling API for very short texts
     if (text.trim().split(' ').length < 10) {
         return null;
@@ -365,9 +419,6 @@ export const getRealtimeSuggestion = async (text: string): Promise<RealtimeSugge
 };
 
 export const analyzeUserStyle = async (currentEssenciaFieldContent: string, allUserContent: string): Promise<string> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     
     const prompt = `
@@ -404,9 +455,6 @@ export const analyzeUserStyle = async (currentEssenciaFieldContent: string, allU
 // This function simulates on-device processing by calling the cloud API.
 // In a real implementation with Pomelli, this would run locally for privacy.
 export const analyzeConfidentialText = async (confidentialText: string): Promise<ResultsAnalysisOutput> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const prompt = `
@@ -456,9 +504,6 @@ export const analyzeConfidentialText = async (confidentialText: string): Promise
 };
 
 export const analyzeCompetitors = async (profiles: string[]): Promise<CompetitorAnalysisOutput> => {
-    if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set.");
-    }
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const prompt = `

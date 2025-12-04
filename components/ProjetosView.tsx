@@ -6,7 +6,7 @@ import { Project, ProjectStatus } from '../types';
 interface ProjetosViewProps {
     projects: Project[];
     onAddProject: () => void;
-    onViewProjectDetails: (id: string) => void;
+    onSelectProject: (id: string) => void;
     onOpenTemplateModal: () => void;
 }
 
@@ -46,7 +46,7 @@ const ProjectCard: React.FC<{ project: Project; onSelect: (id: string) => void }
     );
 };
 
-const ProjetosView: React.FC<ProjetosViewProps> = ({ projects, onAddProject, onViewProjectDetails, onOpenTemplateModal }) => {
+const ProjetosView: React.FC<ProjetosViewProps> = ({ projects, onAddProject, onSelectProject, onOpenTemplateModal }) => {
     const isEmpty = projects.length === 0;
 
     return (
@@ -85,7 +85,7 @@ const ProjetosView: React.FC<ProjetosViewProps> = ({ projects, onAddProject, onV
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                         {projects.map(project => (
-                            <ProjectCard key={project.id} project={project} onSelect={onViewProjectDetails} />
+                            <ProjectCard key={project.id} project={project} onSelect={onSelectProject} />
                         ))}
                     </div>
                 )}

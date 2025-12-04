@@ -1,12 +1,12 @@
-
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { AspectRatio, AjustadoraOutput, Essencia, ContentSuggestion } from "../types";
 import { contentSuggestions } from "../constants";
 
-// IMPORTANT: This API key is managed externally and should not be modified.
-// It is assumed to be available in the execution environment.
-const API_KEY = process.env.API_KEY;
+// ATENÇÃO: A chave da API foi inserida diretamente no código para facilitar a implantação.
+// Em um aplicativo real, esta é uma PRÁTICA INSEGURA. O ideal é configurar a chave
+// como uma "Environment Variable" no painel da Vercel para garantir a segurança.
+const API_KEY = "AIzaSyBp072L5oJlcbCUZXRK-QPuuLFSPVyZFXM";
+
 
 /**
  * Suggests a creative prompt for image generation using the Gemini API.
@@ -16,10 +16,6 @@ const API_KEY = process.env.API_KEY;
  * @returns A promise that resolves with the suggested prompt string.
  */
 export const suggestImagePrompt = async (aspectRatio: AspectRatio, hasReferenceImage: boolean): Promise<string> => {
-    if (!API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
-    }
-
     try {
         const ai = new GoogleGenAI({ apiKey: API_KEY });
         const generationPrompt = `
@@ -97,9 +93,6 @@ export const executePilotoAutomatico = async (theme: string): Promise<Ajustadora
 };
 
 export const generateMonthlySuggestions = async (essencias: Essencia[], emptyDays: number[]): Promise<{ [day: number]: ContentSuggestion }> => {
-  if (!API_KEY) {
-    throw new Error("API_KEY environment variable not set.");
-  }
   if (emptyDays.length === 0) {
     return {};
   }
@@ -113,24 +106,32 @@ export const generateMonthlySuggestions = async (essencias: Essencia[], emptyDay
     , null, 2);
 
     const prompt = `
-    Você é LucresIA, uma mentora expert em marketing digital para o nicho de estética. Sua tarefa é criar um planejamento de postagens otimizado, estratégico e equilibrado para preencher os dias vazios de um calendário.
+    Você é LucresIA, uma mentora expert em marketing digital para o nicho de estética, alinhada ao método Elevare Flow Prime. Sua tarefa é criar um planejamento de postagens estratégico e equilibrado para preencher os dias vazios de um calendário.
 
-    O planejamento deve seguir a seguinte distribuição de pilares de conteúdo:
-    - 40% Autoridade (dicas, informações técnicas simplificadas, "você sabia?", bastidores de estudos, passo a passo de procedimentos).
-    - 30% Vendas (ofertas diretas, "últimas vagas", combos promocionais, apresentação de um serviço/protocolo com foco nos benefícios e transformação).
-    - 20% Prova Social (depoimentos de clientes, antes e depois, print de elogios, repost de stories de clientes).
-    - 10% Lifestyle (posts que conectam com o estilo de vida da cliente, frases motivacionais, comemorações, um pouco da sua rotina como empreendedora).
+    **Diretrizes Estratégicas:**
+    1.  **Distribuição de Pilares:** Siga a proporção: 40% Autoridade, 30% Vendas, 20% Prova Social, 10% Lifestyle.
+    2.  **Inteligência de Séries:** Identifique oportunidades para criar séries de conteúdo. Se sugerir um post "Parte 1", planeje as continuações para dias futuros na mesma requisição.
+    3.  **Consciência Sazonal:** Inclua temas relevantes para a estética de acordo com o mês atual (ex: cuidados pós-verão, preparação para o inverno).
+    4.  **Briefing Completo:** Para cada dia, forneça um briefing completo, não apenas uma ideia.
 
-    Baseado na "Essência da Marca" fornecida e na distribuição estratégica acima, gere ${emptyDays.length} ideias de posts para preencher os seguintes dias do mês: ${emptyDays.join(', ')}.
-
-    Essência da Marca:
+    **Contexto:**
+    - Dias a preencher: ${emptyDays.join(', ')}
+    - Essência da Marca da usuária:
     \`\`\`json
     ${essenciaContext}
     \`\`\`
 
-    Distribua as categorias de forma variada ao longo dos dias para manter o feed dinâmico.
-
-    Responda APENAS com um objeto JSON onde as chaves são os números dos dias e os valores são os objetos de sugestão. Cada sugestão deve conter 'title' (título chamativo), 'category' (uma das quatro: 'Autoridade', 'Vendas', 'Prova Social', 'Lifestyle'), e 'prompt' (um comando detalhado para a LucresIA gerar o conteúdo completo).
+    **Instrução de Saída:**
+    Responda APENAS com um objeto JSON onde as chaves são os números dos dias e os valores são objetos de sugestão. Cada sugestão DEVE conter TODOS os seguintes campos:
+    - \`topic\`: O assunto central do post (ex: "Benefícios da drenagem linfática").
+    - \`title\`: Um título/gancho chamativo para o post.
+    - \`cta\`: Uma chamada para ação (CTA) clara e alinhada ao objetivo.
+    - \`format\`: O formato recomendado ('Carrossel', 'Vídeo', 'Reels', 'Antes/Depois', 'Educativo', 'Story').
+    - \`funnelStage\`: A etapa do funil de cliente ('Descoberta', 'Consideração', 'Decisão').
+    - \`salesTrigger\`: O principal gatilho de venda a ser usado ('Prova Social', 'Urgência', 'Autoridade', 'Técnica', 'Valor').
+    - \`category\`: A categoria do pilar de conteúdo ('Autoridade', 'Vendas', 'Prova Social', 'Lifestyle').
+    - \`prompt\`: Um prompt detalhado para a LucresIA gerar o conteúdo completo posteriormente.
+    - \`isSeries\`: (Opcional) Um objeto \`{ name: "Nome da Série", day: 1 }\` se o post fizer parte de uma série.
     `;
 
     const response = await ai.models.generateContent({
@@ -138,31 +139,18 @@ export const generateMonthlySuggestions = async (essencias: Essencia[], emptyDay
         contents: prompt,
         config: {
             responseMimeType: "application/json",
-            responseSchema: {
-                type: Type.OBJECT,
-                properties: {},
-                additionalProperties: {
-                    type: Type.OBJECT,
-                    properties: {
-                        title: { type: Type.STRING, description: 'Um título chamativo e curto para a ideia de post.' },
-                        category: { type: Type.STRING, enum: ['Autoridade', 'Vendas', 'Prova Social', 'Lifestyle'], description: 'A categoria estratégica do post.' },
-                        prompt: { type: Type.STRING, description: 'Um prompt detalhado para ser usado no "Piloto Automático" para gerar o conteúdo completo.'}
-                    },
-                    required: ['title', 'category', 'prompt']
-                }
-            }
         }
     });
 
     const suggestionsByDay = JSON.parse(response.text);
     
-    // Add IDs to each suggestion
     const suggestionsWithIds: { [day: number]: ContentSuggestion } = {};
     for (const day in suggestionsByDay) {
         if (Object.prototype.hasOwnProperty.call(suggestionsByDay, day)) {
             suggestionsWithIds[parseInt(day, 10)] = {
                 ...suggestionsByDay[day],
-                id: `sugg_${Date.now()}_${day}`
+                id: `sugg_${Date.now()}_${day}`,
+                day: parseInt(day, 10),
             };
         }
     }
@@ -170,11 +158,19 @@ export const generateMonthlySuggestions = async (essencias: Essencia[], emptyDay
 
   } catch (error) {
     console.error("Error generating monthly calendar suggestions with Gemini API:", error);
-    // Fallback logic
     const fallbackSuggestions: { [day: number]: ContentSuggestion } = {};
     emptyDays.forEach(day => {
         const randomSuggestion = contentSuggestions[Math.floor(Math.random() * contentSuggestions.length)];
-        fallbackSuggestions[day] = { ...randomSuggestion, id: `sugg_fallback_${day}` } as ContentSuggestion;
+        fallbackSuggestions[day] = { 
+            ...(randomSuggestion as any), 
+            id: `sugg_fallback_${day}`,
+            day: day,
+            topic: randomSuggestion.title,
+            cta: 'Saiba Mais',
+            format: 'Carrossel',
+            funnelStage: 'Consideração',
+            salesTrigger: 'Autoridade',
+         };
     });
     return fallbackSuggestions;
   }
@@ -188,10 +184,6 @@ export const generateMonthlySuggestions = async (essencias: Essencia[], emptyDay
  * @returns A promise that resolves with the base64 encoded image string.
  */
 export const generateImage = async (prompt: string, aspectRatio: AspectRatio): Promise<string> => {
-    if (!API_KEY) {
-        throw new Error("API_KEY environment variable not set.");
-    }
-
     try {
         const ai = new GoogleGenAI({ apiKey: API_KEY });
         const response = await ai.models.generateImages({

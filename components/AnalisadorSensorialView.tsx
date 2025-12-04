@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { CompetitorAnalysisOutput } from '../types';
 import { analyzeCompetitors } from '../services/lucresiaService';
@@ -5,6 +6,9 @@ import { analyzeCompetitors } from '../services/lucresiaService';
 // Icons
 const SpinnerIcon = () => <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>;
 const RadarIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6h.01"/><path d="M2.29 9.62A10 10 0 0 0 3.34 17"/><path d="M20.66 17A10 10 0 0 0 17.38 4"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/><path d="M14 12a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"/><path d="M12 12h.01"/></svg>;
+const MicIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>;
+const EyeIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>;
+const LayersIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>;
 
 
 const AnalisadorSensorialView: React.FC = () => {
@@ -93,28 +97,35 @@ const AnalisadorSensorialView: React.FC = () => {
                         <h2 className="text-xl font-serif-display mb-6">Análise de Mercado</h2>
                         <div className="flex-1 space-y-8 overflow-y-auto pr-2 -mr-4">
                             <div>
-                                <h3 className="font-semibold text-lg mb-3 text-brand-dark-purple">
-                                    Análise dos Concorrentes
+                                <h3 className="font-semibold text-lg mb-4 text-brand-dark-purple">
+                                    Raio-X dos Concorrentes
                                 </h3>
-                                <div className="space-y-4">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     {result.analysis.map((item, index) => (
-                                        <div key={index} className="bg-white p-4 rounded-lg border border-brand-lavender/50 shadow-sm">
-                                            <h4 className="font-bold text-brand-soft-black">{item.profile}</h4>
-                                            <ul className="mt-2 text-sm space-y-1 text-brand-graphite">
-                                                <li><strong>Tom de Voz:</strong> {item.toneOfVoice}</li>
-                                                <li><strong>Estratégia Visual:</strong> {item.visualStrategy}</li>
-                                                <li><strong>Pilar Principal:</strong> {item.contentPillar}</li>
-                                            </ul>
+                                        <div key={index} className="bg-white p-4 rounded-xl border border-brand-lavender/50 shadow-sm flex flex-col gap-4">
+                                            <h4 className="font-bold text-brand-soft-black text-center pb-2 border-b border-brand-lavender/30">{item.profile}</h4>
+                                            <div className="space-y-1">
+                                                <h5 className="flex items-center gap-2 text-sm font-semibold text-brand-dark-purple"><MicIcon className="w-4 h-4" /> Tom de Voz</h5>
+                                                <p className="text-sm text-brand-graphite pl-6">{item.toneOfVoice}</p>
+                                            </div>
+                                             <div className="space-y-1">
+                                                <h5 className="flex items-center gap-2 text-sm font-semibold text-brand-dark-purple"><EyeIcon className="w-4 h-4" /> Estratégia Visual</h5>
+                                                <p className="text-sm text-brand-graphite pl-6">{item.visualStrategy}</p>
+                                            </div>
+                                             <div className="space-y-1">
+                                                <h5 className="flex items-center gap-2 text-sm font-semibold text-brand-dark-purple"><LayersIcon className="w-4 h-4" /> Pilar Principal</h5>
+                                                <p className="text-sm text-brand-graphite pl-6">{item.contentPillar}</p>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="bg-brand-gold/10 p-4 rounded-lg border-l-4 border-brand-gold">
-                                <h3 className="font-serif-display text-lg flex items-center gap-2 mb-2 text-brand-dark-purple">
-                                    <span className="text-xl">💎</span>
+                            <div className="p-6 rounded-2xl bg-gold-gradient text-white shadow-2xl shadow-brand-gold/30">
+                                <h3 className="font-serif-display text-2xl flex items-center gap-3 mb-3">
+                                    <span className="text-3xl">💎</span>
                                     Sua Oportunidade Única
                                 </h3>
-                                <p className="text-sm text-brand-graphite">{result.opportunity}</p>
+                                <p className="text-white/90 font-medium leading-relaxed">{result.opportunity}</p>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { ResultsAnalysisOutput } from '../types';
 import { analyzeResults, analyzeConfidentialText } from '../services/lucresiaService';
@@ -38,7 +39,7 @@ const AnalisadorDeResultadosView: React.FC = () => {
     };
     
     const placeholders = {
-        metrics: "Cole os resultados da sua última campanha. Seja específica. Ex: Post 'Protocolo Flow Sculpt' (últimos 7 dias): Alcance: 3.500; Salvamentos: 112; Comentários: 23; Leads via DM: 8. Quanto mais detalhes, mais profundos serão os insights.",
+        metrics: "Cole os resultados da sua última campanha. Seja específica. Ex: Post 'Lançamento Pele de Seda' (últimos 7 dias): Alcance: 3.500; Salvamentos: 112; Comentários: 23; Leads via DM: 8. Quanto mais detalhes, mais profundos serão os insights.",
         confidential: "Cole aqui uma conversa real com uma cliente (remova dados pessoais). Ex: 'Eu adorei o resultado, mas tenho medo que não dure muito...' ou 'Qual a diferença desse tratamento para o outro?'. A LucresIA identificará as dores e desejos ocultos para você criar conteúdos que vendem mais."
     };
     

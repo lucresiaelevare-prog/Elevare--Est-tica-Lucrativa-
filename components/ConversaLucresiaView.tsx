@@ -58,6 +58,13 @@ const ConversaLucresiaView: React.FC<ConversaLucresiaViewProps> = ({
     setSelectedEssenciaId(defaultEssenciaId || 'none');
   }, [defaultEssenciaId]);
 
+  // Show welcome message on first visit to this view
+  useEffect(() => {
+    if (window.Lucresia) {
+      window.Lucresia.showWelcome('conversar-com-lucresia', 'Conversar com Lucresia');
+    }
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };

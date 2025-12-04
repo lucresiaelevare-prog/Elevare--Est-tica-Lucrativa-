@@ -43,8 +43,8 @@ const RoiCheckpointCard: React.FC = () => (
                 <p className="text-xs text-brand-lilac">de tempo economizado em criação de conteúdo</p>
             </div>
              <div className="bg-white/10 p-3 rounded-lg">
-                <p className="font-bold text-2xl text-white">R$ 250</p>
-                <p className="text-xs text-brand-lilac">de economia estimada com redução de faltas</p>
+                <p className="font-bold text-2xl text-white">+8</p>
+                <p className="text-xs text-brand-lilac">novos leads qualificados com conteúdo estratégico</p>
             </div>
          </div>
     </div>
@@ -65,7 +65,9 @@ const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
             
             <div className="mb-8 p-4 bg-brand-gold/20 border border-brand-gold rounded-lg text-center">
                 <p className="font-semibold text-brand-dark-purple">Seu período de teste termina em 48h!</p>
-                <p className="text-sm text-brand-graphite/90 mt-1">Assine o plano Pro anual e ganhe 1 ano de LÉXIA grátis.</p>
+                <a href="#" className="mt-2 inline-block px-4 py-2 bg-brand-dark-purple text-white text-sm font-semibold rounded-lg shadow-md hover:bg-brand-dark-purple/90 transition-transform active:scale-95">
+                  Eleve sua assinatura e garanta seus bônus
+                </a>
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">

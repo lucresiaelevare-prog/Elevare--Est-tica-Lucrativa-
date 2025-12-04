@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { navItems } from '../constants';
 import { ActiveView, Workspace } from '../types';
@@ -64,14 +65,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate, isOpen, onClo
                     onClick={() => onNavigate(item.name)}
                     className={`w-full text-left flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150 ${
                       isActive
-                        ? 'bg-brand-lavender/50 text-brand-dark-purple font-semibold shadow-inner'
+                        ? 'bg-gradient-to-r from-brand-dark-purple to-brand-lavender-deep text-white font-bold shadow-lg shadow-brand-dark-purple/30'
                         : 'text-brand-graphite hover:bg-brand-lavender/30 active:bg-brand-lavender/50'
                     }`}
                   >
-                    {item.icon && <item.icon className="w-5 h-5 flex-shrink-0" />}
+                    {item.icon && <item.icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : ''}`} />}
                     <span className="flex-1">{item.name}</span>
                     {item.tag && (
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${item.tag === 'Novo!' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isActive ? 'bg-white/30 text-white' : item.tag === 'Novo!' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
                           {item.tag}
                       </span>
                     )}

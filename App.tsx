@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -13,21 +12,19 @@ import CalendarView from './components/CalendarView';
 import PostModal from './components/PostModal';
 import PilotoAutomaticoModal from './components/PilotoAutomaticoModal';
 import FeedbackModal from './components/FeedbackModal';
-import { ActiveView, Trilha, Essencia, ScheduledPost, PostPerformance, Project, Workspace, ProjectTemplate, Toast as ToastType, JourneyStage, CompetitorAnalysisOutput } from './types';
+import { ActiveView, Trilha, Essencia, ScheduledPost, PostPerformance, Project, Workspace, ProjectTemplate, Toast as ToastType, JourneyStage, CompetitorAnalysisOutput, ContentSuggestion } from './types';
 import { essencias as initialEssencias, trilhas, initialScheduledPosts, initialProjects, projectTemplates, welcomeTourSteps } from './constants';
 import TrilhaDetailModal from './components/TrilhaDetailModal';
 import ProjectModal from './components/ProjectModal';
 import ProjectDetailView from './components/ProjectDetailView';
 import ProjectTemplateModal from './components/ProjectTemplateModal';
 import GeradorDePautasView from './components/GeradorDePautasView';
-import AvaliadorDeConteudoView from './components/AvaliadorDeConteudoView';
-import AnalisadorDeResultadosView from './components/AnalisadorDeResultadosView';
+import HubDeAnaliseView from './components/HubDeAnaliseView';
 import TourModal from './components/TourModal';
 import Toast from './components/Toast';
 import AutomacaoView from './components/AutomacaoView';
 import JornadaView from './components/JornadaView';
 import JornadaStageModal from './components/JornadaStageModal';
-import AnalisadorSensorialView from './components/AnalisadorSensorialView';
 import LaboratorioView from './components/LaboratorioView';
 
 declare global {
@@ -38,6 +35,8 @@ declare global {
   }
 }
 
+const DnaIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15.2 3.8a2.2 2.2 0 0 1 3.1 0l1.4 1.4a2.2 2.2 0 0 1 0 3.1L6.5 21.5a1.4 1.4 0 0 1-2 0L3.1 20.1a1.4 1.4 0 0 1 0-2l12.1-12.1z"></path><path d="M8.2 5.8a2.2 2.2 0 0 0-3.1 0L3.7 7.2a2.2 2.2 0 0 0 0 3.1l7.8 7.9a1.4 1.4 0 0 0 2 0l1.4-1.4a1.4 1.4 0 0 0 0-2L8.2 5.8z"></path></svg>;
+
 const initialWorkspace: Workspace = {
   id: `ws_${Date.now()}`,
   name: 'Esteticista M.',
@@ -45,6 +44,64 @@ const initialWorkspace: Workspace = {
   projects: initialProjects,
   scheduledPosts: initialScheduledPosts,
 };
+
+const loadAndValidateWorkspaces = (): { workspaces: Workspace[]; activeId: string } => {
+  const initial = { workspaces: [initialWorkspace], activeId: initialWorkspace.id };
+  try {
+    const savedWorkspaces = localStorage.getItem('elevare-workspaces');
+    if (!savedWorkspaces) return initial;
+
+    const parsed = JSON.parse(savedWorkspaces);
+    if (!Array.isArray(parsed) || parsed.length === 0) return initial;
+    
+    // Deep validation and migration for each workspace to prevent crashes
+    const validatedWorkspaces = parsed.map((ws: Partial<Workspace>) => {
+      const projects = (Array.isArray(ws.projects) ? ws.projects : []).map(p => ({
+        ...p,
+        // Add default/missing properties for backward compatibility
+        goal: p.goal || '',
+      }));
+
+      const essencias = (Array.isArray(ws.essencias) ? ws.essencias : initialEssencias).map(e => {
+        const initialMatch = initialEssencias.find(ie => ie.id === e.id);
+        return {
+          ...e,
+          icon: initialMatch?.icon || DnaIcon, // Restore icon function
+          fields: (Array.isArray(e.fields) ? e.fields : []).map(f => ({
+            ...f,
+            // Restore field icon function from constants or fallback to DnaIcon
+            icon: initialMatch?.fields.find(iff => iff.id === f.id)?.icon || DnaIcon
+          }))
+        };
+      });
+
+      return {
+        id: ws.id || `ws_${Date.now()}`,
+        name: ws.name || 'Workspace',
+        essencias: essencias,
+        projects: projects,
+        scheduledPosts: Array.isArray(ws.scheduledPosts) ? ws.scheduledPosts : [],
+        defaultEssenciaId: ws.defaultEssenciaId,
+      };
+    });
+    
+    // Validate active workspace ID
+    let activeId = localStorage.getItem('elevare-active-workspace-id');
+    if (!activeId || !validatedWorkspaces.some(ws => ws.id === activeId)) {
+      activeId = validatedWorkspaces[0].id;
+    }
+    
+    localStorage.setItem('elevare-active-workspace-id', activeId);
+    return { workspaces: validatedWorkspaces, activeId };
+
+  } catch (error) {
+    console.error("Failed to load or validate workspaces, resetting to default.", error);
+    localStorage.removeItem('elevare-workspaces');
+    localStorage.removeItem('elevare-active-workspace-id');
+    return initial;
+  }
+};
+
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ActiveView>('Início');
@@ -88,26 +145,20 @@ const App: React.FC = () => {
   };
   
   // WORKSPACE STATE MANAGEMENT
-  const [workspaces, setWorkspaces] = useState<Workspace[]>(() => {
-    try {
-      const saved = localStorage.getItem('elevare-workspaces');
-      return saved ? JSON.parse(saved) : [initialWorkspace];
-    } catch (error) {
-      console.error("Failed to parse workspaces from localStorage", error);
-      return [initialWorkspace];
-    }
-  });
-  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>(workspaces[0].id);
+  const [{ workspaces, activeId: initialActiveId }] = useState(loadAndValidateWorkspaces);
+  const [workspacesState, setWorkspaces] = useState<Workspace[]>(workspaces);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>(initialActiveId);
 
   useEffect(() => {
     try {
-      localStorage.setItem('elevare-workspaces', JSON.stringify(workspaces));
+      localStorage.setItem('elevare-workspaces', JSON.stringify(workspacesState));
+      localStorage.setItem('elevare-active-workspace-id', activeWorkspaceId);
     } catch (error) {
       console.error("Failed to save workspaces to localStorage", error);
     }
-  }, [workspaces]);
+  }, [workspacesState, activeWorkspaceId]);
 
-  const activeWorkspace = workspaces.find(w => w.id === activeWorkspaceId) || workspaces[0];
+  const activeWorkspace = workspacesState.find(w => w.id === activeWorkspaceId) || workspacesState[0];
 
   const updateActiveWorkspace = (updater: (workspace: Workspace) => Workspace) => {
     setWorkspaces(prev => prev.map(ws => ws.id === activeWorkspaceId ? updater(ws) : ws));
@@ -120,32 +171,28 @@ const App: React.FC = () => {
   const [isProjectTemplateModalOpen, setIsProjectTemplateModalOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<Partial<ScheduledPost> | null>(null);
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
-  const [pilotoModalState, setPilotoModalState] = useState<{isOpen: boolean; theme?: string}>({isOpen: false});
+  const [pilotoModalState, setPilotoModalState] = useState<{isOpen: boolean; suggestion?: ContentSuggestion}>({isOpen: false});
   const [feedbackPost, setFeedbackPost] = useState<ScheduledPost | null>(null);
 
-  // LucresIA Welcome Module Integration
+  // Robustness: Effect to validate selected items against the current workspace
   useEffect(() => {
-    if (window.Lucresia) {
-      let sectorId: string | null = null;
-      let sectorName: string = activeView;
+    if (!activeWorkspace) return;
 
-      switch (activeView) {
-        case 'Essência da Marca': sectorId = 'essencia-da-marca'; break;
-        case 'Gerador de Pautas': sectorId = 'gerador-de-pautas'; break;
-        case 'Calendário Editorial': sectorId = 'calendario-editorial'; break;
-        case 'Projetos': sectorId = 'projetos'; break;
-        case 'Avaliador de Conteúdo': sectorId = 'avaliador-de-conteudo'; break;
-        case 'Analisador de Resultados': sectorId = 'analisador-de-resultados'; break;
-        case 'Analisador Sensorial': sectorId = 'analisador-sensorial'; break;
-        case 'Jornada da Cliente': sectorId = 'jornada-da-cliente'; break;
-        case 'Trilhas': sectorId = 'trilhas'; break;
-      }
-      
-      if (sectorId) {
-        window.Lucresia.showWelcome(sectorId, sectorName);
-      }
+    if (activeView === 'Projetos' && selectedProjectId) {
+        const projectExists = activeWorkspace.projects.some(p => p.id === selectedProjectId);
+        if (!projectExists) {
+            setSelectedProjectId(null);
+            showToast("O projeto selecionado não foi encontrado ou foi excluído.", "error");
+        }
     }
-  }, [activeView]);
+    if (activeView === 'Essência da Marca' && selectedEssenciaId) {
+        const essenciaExists = activeWorkspace.essencias.some(e => e.id === selectedEssenciaId);
+        if (!essenciaExists) {
+            setSelectedEssenciaId(null);
+            showToast("A essência selecionada não foi encontrada ou foi excluída.", "error");
+        }
+    }
+  }, [activeWorkspace, activeView, selectedProjectId, selectedEssenciaId]);
 
 
   const handleUpdateEssenciaField = (essenciaId: string, fieldId: string, newContent: string) => {
@@ -196,6 +243,18 @@ const App: React.FC = () => {
     setIsPostModalOpen(false);
     setEditingPost(null);
   };
+  
+  const handleSavePostFromPiloto = (postData: Partial<ScheduledPost>) => {
+    const newPost: ScheduledPost = {
+        id: `post_${Date.now()}`,
+        title: postData.title || 'Novo Post',
+        date: postData.date!,
+        status: postData.status || 'Rascunho',
+        content: postData.content || '',
+    };
+    handleSavePost(newPost);
+    showToast('Post salvo como rascunho no seu calendário!', 'success');
+  };
 
   const handleAddPost = (date: string) => {
     const postData: Partial<ScheduledPost> = { date, status: 'Ideia' };
@@ -215,11 +274,6 @@ const App: React.FC = () => {
     setEditingProject({ status: 'Planejamento' });
     setIsProjectModalOpen(true);
   };
-
-  const handleViewProjectDetails = (projectId: string) => {
-      setSelectedProjectId(projectId);
-      setActiveView('Projetos');
-  }
 
   const handleCreateProjectFromTemplate = (template: ProjectTemplate) => {
     const projectName = prompt(`Nome para o novo projeto (baseado em "${template.name}"):`, template.name);
@@ -268,12 +322,12 @@ const App: React.FC = () => {
     setFeedbackPost(null);
   };
 
-  const handleOpenPilotoModal = (theme?: string) => {
-      setPilotoModalState({ isOpen: true, theme });
+  const handleOpenPilotoModal = (suggestion: ContentSuggestion) => {
+      setPilotoModalState({ isOpen: true, suggestion });
   };
   
   const handleAddWorkspace = () => {
-    const name = prompt("Nome do novo Workspace:", `Cliente ${workspaces.length + 1}`);
+    const name = prompt("Nome do novo Workspace:", `Cliente ${workspacesState.length + 1}`);
     if (name) {
       const newWorkspace: Workspace = {
         id: `ws_${Date.now()}`,
@@ -339,6 +393,10 @@ const App: React.FC = () => {
   }
 
   const renderContent = () => {
+    if (!activeWorkspace) {
+        return <div className="p-8">Carregando Workspace...</div>; // Safety net
+    }
+
     if (activeView === 'Essência da Marca' && selectedEssenciaId) {
         const essencia = activeWorkspace.essencias.find(e => e.id === selectedEssenciaId);
         if (essencia) {
@@ -386,17 +444,13 @@ const App: React.FC = () => {
         return <ProjetosView 
                   projects={activeWorkspace.projects} 
                   onAddProject={handleAddProject} 
-                  onViewProjectDetails={setSelectedProjectId}
+                  onSelectProject={setSelectedProjectId}
                   onOpenTemplateModal={() => setIsProjectTemplateModalOpen(true)}
                 />;
       case 'Gerador de Pautas':
         return <GeradorDePautasView />;
-      case 'Avaliador de Conteúdo':
-        return <AvaliadorDeConteudoView />;
-      case 'Analisador de Resultados':
-        return <AnalisadorDeResultadosView />;
-      case 'Analisador Sensorial':
-        return <AnalisadorSensorialView />;
+      case 'HUB de Análise':
+        return <HubDeAnaliseView />;
       case 'Laboratório Elevare':
         return <LaboratorioView onNavigate={handleNavigate} />;
       case 'Trilhas':
@@ -428,7 +482,7 @@ const App: React.FC = () => {
         onNavigate={handleNavigate} 
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
-        workspaces={workspaces}
+        workspaces={workspacesState}
         activeWorkspaceId={activeWorkspaceId}
         onSwitchWorkspace={setActiveWorkspaceId}
         onAddWorkspace={handleAddWorkspace}
@@ -513,7 +567,8 @@ const App: React.FC = () => {
         <PilotoAutomaticoModal
           isOpen={pilotoModalState.isOpen}
           onClose={() => setPilotoModalState({ isOpen: false })}
-          initialTheme={pilotoModalState.theme}
+          suggestion={pilotoModalState.suggestion || null}
+          onSavePost={handleSavePostFromPiloto}
         />
       )}
 

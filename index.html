@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Elevare | Estética Lucrativa</title>
+    <title>Elevare — Estética Lucrativa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,10 +51,11 @@
   <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+    "@google/genai": "https://esm.sh/@google/genai",
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+    "react/": "https://esm.sh/react@18.2.0/"
   }
 }
 </script>
@@ -244,6 +245,22 @@
               'Adicione o seu serviço-chave e 3 diferenciais únicos.'
             ],
           },
+          'conversar-com-lucresia': {
+            title: 'Conversar com LucresIA',
+            list: [
+              "Comece com um objetivo claro. Ex: 'Crie 3 ideias de posts sobre criomodelagem'.",
+              "Forneça contexto. Use o seletor de DNA para carregar a essência da sua marca.",
+              "Use o chat para refinar textos. Cole uma legenda e peça: 'Melhore este texto'."
+            ]
+          },
+           'hub-de-analise': {
+            title: 'HUB de Análise',
+            list: [
+              "Use o 'Avaliador' para otimizar textos antes de publicar.",
+              "Use o 'Analisador de Resultados' para transformar métricas em ações.",
+              "Use o 'Analisador Sensorial' para encontrar seu diferencial no mercado."
+            ]
+          },
           'gerador-de-pautas': {
             title: 'Gerador de Pautas',
             list: [
@@ -268,20 +285,12 @@
               'Mapeie a jornada da sua cliente ideal para identificar pontos de melhoria.'
             ]
           },
-          'analisador-sensorial': {
-            title: 'Analisador Sensorial',
-            list: [
-              'Insira o @ de até 3 concorrentes ou perfis de inspiração.',
-              'Analise o tom de voz e a estratégia visual do mercado.',
-              'Descubra a "Oportunidade Única" para diferenciar sua marca.'
-            ]
-          },
           'default': {
             title: 'Dicas Gerais',
             list: [
               'Explore as "Trilhas" para ter estratégias prontas.',
-              'Use o "Analisador de Resultados" para transformar métricas em ações.',
-              'Mantenha sua "Essência da Marca" sempre atualizada.'
+              'Mantenha sua "Essência da Marca" sempre atualizada.',
+              'Use o "Laboratório Elevare" para descobrir novas ferramentas criativas.'
             ]
           }
         };

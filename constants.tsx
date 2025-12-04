@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavItem, Essencia, Trilha, ScheduledPost, ContentSuggestion, Project, TrilhaCategory, ProjectTemplate, TourStep, JourneyStage, UserProfile } from './types';
 
@@ -10,12 +11,10 @@ const CompassIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg 
 const CameraIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>;
 const CalendarIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
 const FeatherIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" /><line x1="16" x2="2" y1="8" y2="22" /><line x1="17.5" x2="9" y1="15" y2="15" /></svg>;
-const BeakerIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>;
 const AnalyticsIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><rect x="7" y="12" width="4" height="6" /><rect x="13" y="8" width="4" height="10" /><rect x="19" y="4" width="4" height="14" /></svg>;
 const RocketIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.3.05-3.11.63-.42 1.25-.9 1.94-1.41.98-.73 2.22-1.22 3.51-1.33 2.23-.19 4.3 1.23 5.38 3.32.36.71.25 1.57-.29 2.14-1.25 1.34-3.32 2.81-5.32 3.9a1.5 1.5 0 0 1-1.23.23c-.26-.05-.48-.16-.69-.3-.59-.39-1.03-.93-1.3-1.58-.27-.65-.3-1.42-.04-2.11-.27-.27-.56-.53-.88-.77-.42-.32-.88-.59-1.38-.78a2.5 2.5 0 0 0-2.04-.15Z"/><path d="m22 2-7 2-3 7 2 2 7-3 2-7Z"/></svg>;
 const JourneyIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>;
 export const FeedbackIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>;
-const RadarIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"/><path d="M4 6h.01"/><path d="M2.29 9.62A10 10 0 0 0 3.34 17"/><path d="M20.66 17A10 10 0 0 0 17.38 4"/><path d="M12 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/><path d="M14 12a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"/><path d="M12 12h.01"/></svg>;
 const ToolIcon = ({ className = 'w-5 h-5' }: { className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/></svg>;
 
 
@@ -27,9 +26,7 @@ export const navItems: NavItem[] = [
   { name: 'HUB', isSectionTitle: true },
   { name: 'Jornada da Cliente', icon: JourneyIcon },
   { name: 'Gerador de Pautas', icon: FeatherIcon },
-  { name: 'Avaliador de Conteúdo', icon: BeakerIcon },
-  { name: 'Analisador de Resultados', icon: AnalyticsIcon },
-  { name: 'Analisador Sensorial', icon: RadarIcon },
+  { name: 'HUB de Análise', icon: AnalyticsIcon },
   { name: 'Laboratório Elevare', icon: ToolIcon, tag: 'Novo!' },
   { name: 'Trilhas', icon: CompassIcon },
   { name: 'Estúdio Visual', icon: CameraIcon },
@@ -42,7 +39,7 @@ export const essencias: Essencia[] = [
         id: 'essencia-personalidade',
         title: 'Personalidade',
         description: 'Defina a voz e o tom da sua marca.',
-        icon: ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}><path d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM5.22 5.22a.75.75 0 011.06 0l1.06 1.06a.75.75 0 01-1.06 1.06L5.22 6.28a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 012 10zM14.78 14.78a.75.75 0 01-1.06 0l-1.06-1.06a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0118 10zM12.28 14.78a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM7.72 5.22a.75.75 0 010 1.06L6.66 7.34a.75.75 0 01-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zM10 18a.75.75 0 01-.75-.75v-1.5a.75.75 0 011.5 0v1.5A.75.75 0 0110 18z" /><path d="M10 7a3 3 0 100 6 3 3 0 000-6z" /></svg>,
+        icon: ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}><path d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM5.22 5.22a.75.75 0 011.06 0l1.06 1.06a.75.75 0 01-1.06 1.06L5.22 6.28a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 012 10zM14.78 14.78a.75.75 0 01-1.06 0l-1.06-1.06a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010 1.5h1.5A.75.75 0 0118 10zM12.28 14.78a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM7.72 5.22a.75.75 0 010 1.06L6.66 7.34a.75.75 0 01-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zM10 18a.75.75 0 01-.75-.75v-1.5a.75.75 0 011.5 0v1.5A.75.75 0 0110 18z" /><path d="M10 7a3 3 0 100 6 3 3 0 000-6z" /></svg>,
         fields: [
             { id: 'f1', title: 'Tom de Voz', icon: DnaIcon, content: 'Acolhedor, especialista e confiante.', autoGenerated: true },
             { id: 'f2', title: 'Valores', icon: DnaIcon, content: 'Ciência, Resultados, Cuidado Personalizado.' },
@@ -169,11 +166,44 @@ export const welcomeTourSteps: TourStep[] = [
     }
 ];
 
-
+// Fix: Add missing properties to contentSuggestions to satisfy the ContentSuggestion type.
 export const contentSuggestions: ContentSuggestion[] = [
-    { id: 'sugg_1', title: 'Mitos e Verdades sobre skincare', category: 'Autoridade', prompt: 'Crie um post desmistificando 3 mitos comuns sobre cuidados com a pele no verão.' },
-    { id: 'sugg_2', title: 'Enquete: Qual seu maior desafio?', category: 'Lifestyle', prompt: 'Gere um story interativo com uma enquete sobre os maiores desafios de beleza das clientes (ex: manchas, flacidez, acne).' },
-    { id: 'sugg_3', title: 'Oferta Especial: Protocolo Detox', category: 'Vendas', prompt: 'Elabore uma oferta especial para o protocolo Detox Pós-Feriado, com senso de urgência.' },
+    { 
+        id: 'sugg_1',
+        day: 1,
+        topic: 'Mitos sobre skincare',
+        title: 'Mitos e Verdades sobre skincare', 
+        category: 'Autoridade', 
+        cta: 'Comente um mito que você acreditava!',
+        format: 'Carrossel',
+        funnelStage: 'Consideração',
+        salesTrigger: 'Autoridade',
+        prompt: 'Crie um post desmistificando 3 mitos comuns sobre cuidados com a pele no verão.' 
+    },
+    { 
+        id: 'sugg_2',
+        day: 2,
+        topic: 'Desafios de beleza',
+        title: 'Enquete: Qual seu maior desafio?', 
+        category: 'Lifestyle', 
+        cta: 'Vote na enquete!',
+        format: 'Story',
+        funnelStage: 'Descoberta',
+        salesTrigger: 'Prova Social',
+        prompt: 'Gere um story interativo com uma enquete sobre os maiores desafios de beleza das clientes (ex: manchas, flacidez, acne).' 
+    },
+    { 
+        id: 'sugg_3', 
+        day: 3,
+        topic: 'Oferta Protocolo Detox',
+        title: 'Oferta Especial: Protocolo Detox', 
+        category: 'Vendas', 
+        cta: 'Clique no link da bio para garantir!',
+        format: 'Story',
+        funnelStage: 'Decisão',
+        salesTrigger: 'Urgência',
+        prompt: 'Elabore uma oferta especial para o protocolo Detox Pós-Feriado, com senso de urgência.' 
+    },
 ];
 
 // Icons for Journey Stages

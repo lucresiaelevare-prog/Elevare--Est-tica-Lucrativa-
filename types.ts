@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type NavItemName = 'Início' | 'Conversar com Lucresia' | 'Essência da Marca' | 'Projetos' | 'Gerador de Pautas' | 'Avaliador de Conteúdo' | 'Analisador de Resultados' | 'Analisador Sensorial' | 'Laboratório Elevare' | 'Trilhas' | 'Estúdio Visual' | 'Calendário Editorial' | 'Automação de Publicação' | 'Jornada da Cliente' | 'HUB';
+export type NavItemName = 'Início' | 'Conversar com Lucresia' | 'Essência da Marca' | 'Projetos' | 'Gerador de Pautas' | 'HUB de Análise' | 'Laboratório Elevare' | 'Trilhas' | 'Estúdio Visual' | 'Calendário Editorial' | 'Automação de Publicação' | 'Jornada da Cliente' | 'HUB';
 
 export type ActiveView = NavItemName;
 
@@ -98,10 +98,31 @@ export interface ScheduledPost {
 
 export interface ContentSuggestion {
     id: string;
+    day: number;
+    topic: string;
     title: string;
+    cta: string;
+    format: 'Carrossel' | 'Vídeo' | 'Reels' | 'Antes/Depois' | 'Educativo' | 'Story';
+    funnelStage: 'Descoberta' | 'Consideração' | 'Decisão';
+    salesTrigger: 'Prova Social' | 'Urgência' | 'Autoridade' | 'Técnica' | 'Valor';
     category: 'Autoridade' | 'Vendas' | 'Prova Social' | 'Lifestyle';
     prompt: string;
+    isSeries?: { name: string; day: number };
 }
+
+export interface PostVariation {
+    name: string;
+    caption: string;
+}
+
+export interface FullPostPackage {
+    mainCaption: string;
+    variations: PostVariation[];
+    mediaSuggestions: string[];
+    hashtags: string[];
+    checklist: string[];
+}
+
 
 // Types for Projects
 export type ProjectType = 'Campanha de Lançamento' | 'Funil de Vendas' | 'Planejamento de Conteúdo' | 'Linha Editorial' | 'Anúncios' | 'E-mail Marketing' | 'Branding & Posicionamento';

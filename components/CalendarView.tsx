@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { ScheduledPost, PostStatus, ContentSuggestion, Essencia } from '../types';
 import { FeedbackIcon } from '../constants';
@@ -10,7 +9,7 @@ interface CalendarViewProps {
     onAddPost: (date: string) => void;
     onEditPost: (post: ScheduledPost) => void;
     onOpenFeedbackModal: (post: ScheduledPost) => void;
-    onLaunchPiloto: (theme: string) => void;
+    onLaunchPiloto: (suggestion: ContentSuggestion) => void;
 }
 
 const statusColors: Record<PostStatus, { bg: string; text: string; }> = {
@@ -34,6 +33,19 @@ const InfoIcon = ({ className = 'w-4 h-4' }: { className?: string }) => (
         <line x1="12" y1="8" x2="12.01" y2="8"></line>
     </svg>
 );
+
+const FormatIcon: React.FC<{ format: ContentSuggestion['format'] }> = ({ format }) => {
+  const icons = {
+    'Carrossel': () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>,
+    'Vídeo': () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>,
+    'Reels': () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>,
+    'Antes/Depois': () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7-4-4-7 7"/></svg>,
+    'Educativo': () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>,
+    'Story': () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>,
+  };
+  const IconComponent = icons[format] || icons['Carrossel'];
+  return <IconComponent />;
+};
 
 
 const CalendarView: React.FC<CalendarViewProps> = ({ posts, essencias, onAddPost, onEditPost, onOpenFeedbackModal, onLaunchPiloto }) => {
@@ -162,7 +174,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ posts, essencias, onAddPost
             const suggestion = monthlySuggestions[day];
 
             cells.push(
-                <div key={day} className="relative bg-white p-1 md:p-2 min-h-[100px] md:min-h-[140px] flex flex-col group border-r border-b border-gray-200">
+                <div key={day} className="relative bg-white p-1 md:p-2 min-h-[100px] md:min-h-[160px] flex flex-col group border-r border-b border-gray-200">
                     <div className="flex justify-between items-center">
                        <span className={`text-xs md:text-sm font-medium ${isToday ? 'bg-brand-dark-purple text-white rounded-full w-6 h-6 flex items-center justify-center' : 'text-gray-700'}`}>
                            {day}
@@ -202,13 +214,22 @@ const CalendarView: React.FC<CalendarViewProps> = ({ posts, essencias, onAddPost
                             ) : suggestion ? (
                                 <div className={`relative p-2 rounded-md text-xs border-l-4 flex flex-col justify-between h-full ${suggestionCategoryColors[suggestion.category].bg} ${suggestionCategoryColors[suggestion.category].border}`}>
                                     <div>
-                                        <span className={`font-bold ${suggestionCategoryColors[suggestion.category].text}`}>{suggestion.category}</span>
-                                        <p className={`mt-0.5 ${suggestionCategoryColors[suggestion.category].text.replace('700','600')}`}>{suggestion.title}</p>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${suggestionCategoryColors[suggestion.category].bg.replace('50','100')} ${suggestionCategoryColors[suggestion.category].text}`}>{suggestion.category}</span>
+                                        </div>
+                                        <p className={`font-semibold text-xs ${suggestionCategoryColors[suggestion.category].text.replace('700','800')}`}>{suggestion.title}</p>
                                     </div>
-                                    <div className="mt-2 flex flex-col sm:flex-row gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="mt-2 space-y-1">
+                                        <div className="flex items-center gap-1.5 text-gray-500 text-[10px]"><FormatIcon format={suggestion.format}/> {suggestion.format}</div>
+                                        <div className="flex items-center gap-1.5 text-gray-500 text-[10px]">
+                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="m16 8-8 8"></path><path d="M12 16h.01"></path><path d="M12 8h.01"></path><path d="M8 12h.01"></path><path d="M16 12h.01"></path><path d="M8 16h.01"></path></svg>
+                                            {suggestion.funnelStage}
+                                        </div>
+                                    </div>
+                                    <div className="mt-auto pt-2 flex flex-col sm:flex-row gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button 
-                                            onClick={() => onLaunchPiloto(suggestion.prompt)}
-                                            className="px-2 py-1 text-[10px] font-semibold bg-white border border-gray-300 rounded hover:bg-gray-100 flex-1 text-center"
+                                            onClick={() => onLaunchPiloto(suggestion)}
+                                            className="px-2 py-1.5 text-[11px] font-semibold bg-white border border-gray-300 rounded-md hover:bg-gray-100 flex-1 text-center"
                                         >
                                             Usar Ideia
                                         </button>
